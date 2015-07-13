@@ -16,9 +16,12 @@ struct pthread_args {
     char to_print;
 };
 
-// This function will attempt to print arg as a char type.
-// If arg is not of type char *, strange things will happen.
-// Not sure how to enforce type arguments in C.
+// This function will attempt to print a arg->to_print as a char. 
+// If arg->to_print is not of type char, strange things will happen.
+// Not sure it's possible enforce type arguments in C when using void
+// pointers.
+// Argument arg also contains the "which" variable, which is used to enforce
+// pthread ordering.
 void *print_char(void *arg) {
     int i = 0;
     struct pthread_args *in_args = (struct pthread_args *)arg;
