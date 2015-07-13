@@ -6,6 +6,7 @@
 
 #define NUM_ITERATIONS 3000
 #define MILLISECOND 1000
+
 sem_t semaphore;
 volatile int turn = 0;
 
@@ -22,7 +23,7 @@ void *print_char(void *arg) {
     struct pthread_args *in_args = (struct pthread_args *)arg;
     while (i < NUM_ITERATIONS) {
         while (turn != in_args->which) {
-            // Sleep while it's not our turn.
+            // Sleep for one millisecond while it's not our turn.
             usleep(MILLISECOND);
         }
         // Lock semaphore, so that only this function can print to the console.
@@ -45,7 +46,8 @@ int main(int argc, char *argv[]) {
 
     // Create a semaphore. All created threads will lock this when
     // they wish to print.
-    // Don't allow process sharing (pshared = 0), initialize (value = 1).
+    // Don't allow process sharing (pshared = 0), initialize value to 1 so that
+    // only one thread can lock the semaphore at a time.
     sem_init(&semaphore, 0, 1);
 
     // Create three threads that print "a", "b", and "c".
