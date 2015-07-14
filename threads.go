@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 // This function runs a for loop that prints its character
 // while it receives OKs from the main goroutine.
@@ -12,6 +15,7 @@ func printChar(toPrint string) chan bool {
 		for ok {
 			// Print string and wait for signals.
 			fmt.Print(toPrint + " ")
+			time.Sleep(1 * time.Millisecond)
 			ok = <-listener
 		}
 	}()
@@ -25,6 +29,11 @@ func main() {
 	a := printChar("a")
 	b := printChar("b")
 	c := printChar("c")
+
+	// Defer cleanup to the end of the function.
+	defer close(a)
+	defer close(b)
+	defer close(c)
 	// Run 1000 times.
 	for i := 0; i < 1000; i++ {
 		// Alternate between goroutines.
